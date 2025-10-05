@@ -37,8 +37,12 @@ export default function LoginPage() {
       // The login function from AuthContext will handle storing the session and redirecting
       login(data);
 
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unexpected error occurred');
+      }
     } finally {
       setLoading(false);
     }

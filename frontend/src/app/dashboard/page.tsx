@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import NewProjectForm from '@/components/dashboard/NewProjectForm';
+import ProjectList from '@/components/dashboard/ProjectList';
 
 export default function DashboardPage() {
   const { session, logout, loading } = useAuth();
