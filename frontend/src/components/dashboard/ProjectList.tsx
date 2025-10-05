@@ -25,7 +25,7 @@ export default function ProjectList() {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/projects', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects`, {
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
         },
