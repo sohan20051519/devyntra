@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -20,9 +20,10 @@ export default function ProjectList() {
   const [error, setError] = useState<string | null>(null);
   const { session } = useAuth();
 
-  const fetchProjects = async () => {
+  const fetchProjects = useCallback(async () => {
     if (!session) return;
 
+    setLoading(true);
     try {
       const response = await fetch('http://localhost:8000/projects', {
         headers: {
@@ -36,12 +37,16 @@ export default function ProjectList() {
 
       const data = await response.json();
       setProjects(data);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unexpected error occurred');
+      }
     } finally {
       setLoading(false);
     }
-  };
+  }, [session]);
 
   useEffect(() => {
     fetchProjects();
@@ -52,7 +57,7 @@ export default function ProjectList() {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [session]);
+  }, [fetchProjects]);
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
@@ -80,7 +85,7 @@ export default function ProjectList() {
       <h2 className="text-2xl font-bold mb-4">Your Projects</h2>
       {projects.length === 0 ? (
         <div className="p-8 border-2 border-dashed rounded-lg text-center text-muted-foreground">
-          <p>You haven't created any projects yet. Add one above to get started.</p>
+          <p>You haven&apos;t created any projects yet. Add one above to get started.</p>
         </div>
       ) : (
         <div className="space-y-4">
